@@ -1,12 +1,12 @@
 {
   "version": 3,
   "targets": {
-    ".NETFramework,Version=v5.0": {},
-    ".NETFramework,Version=v5.0/win7-x86": {}
+    ".NETFramework,Version=v3.5": {},
+    ".NETFramework,Version=v3.5/win7-x86": {}
   },
   "libraries": {},
   "projectFileDependencyGroups": {
-    ".NETFramework,Version=v5.0": []
+    ".NETFramework,Version=v3.5": []
   },
   "packageFolders": {
     "C:\\Users\\jmw7078\\.nuget\\packages\\": {},
@@ -29,7 +29,7 @@
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net5.0"
+        "net35"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -37,7 +37,7 @@
         "https://pkgs.dev.azure.com/JJKellerMS/_packaging/ManagedServices/nuget/v3/index.json": {}
       },
       "frameworks": {
-        "net50": {
+        "net35": {
           "projectReferences": {}
         }
       },
@@ -48,7 +48,7 @@
       }
     },
     "frameworks": {
-      "net50": {
+      "net35": {
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.407\\RuntimeIdentifierGraph.json"
       }
     },
