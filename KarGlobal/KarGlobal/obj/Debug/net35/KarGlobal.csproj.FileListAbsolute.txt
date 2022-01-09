@@ -1,4 +1,8 @@
-C:\Jake\CodingAssessments\KarGlobal\KarGlobal\obj\Debug\net35\KarGlobal.csprojAssemblyReference.cache
+C:\Jake\CodingAssessments\KarGlobal\KarGlobal\bin\Debug\net35\KarGlobal.dll
+C:\Jake\CodingAssessments\KarGlobal\KarGlobal\bin\Debug\net35\KarGlobal.pdb
 C:\Jake\CodingAssessments\KarGlobal\KarGlobal\obj\Debug\net35\KarGlobal.AssemblyInfoInputs.cache
 C:\Jake\CodingAssessments\KarGlobal\KarGlobal\obj\Debug\net35\KarGlobal.AssemblyInfo.cs
 C:\Jake\CodingAssessments\KarGlobal\KarGlobal\obj\Debug\net35\KarGlobal.csproj.CoreCompileInputs.cache
+C:\Jake\CodingAssessments\KarGlobal\KarGlobal\obj\Debug\net35\KarGlobal.dll
+C:\Jake\CodingAssessments\KarGlobal\KarGlobal\obj\Debug\net35\KarGlobal.pdb
+C:\Jake\CodingAssessments\KarGlobal\KarGlobal\obj\Debug\net35\KarGlobal.csprojAssemblyReference.cache

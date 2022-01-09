@@ -24,17 +24,20 @@ namespace KarGlobal
                         {
                             new CheckingAccount
                             {
+                                OwnerId = 202,
                                 AccountId = 501,
                                 Balance = 1000,
                             },
                                 new CorporateInvestmentAccount
                             {
                                 AccountId = 605,
+                                OwnerId = 202,
                                 Balance = 10000,
                             },
                                 new IndividualInvestmentAccount
                             {
                                 AccountId = 703,
+                                OwnerId = 202,
                                 Balance = 600,
                             },
                         },
@@ -48,11 +51,13 @@ namespace KarGlobal
                             new CheckingAccount
                             {
                                 AccountId = 845,
+                                OwnerId = 205,
                                 Balance = 3000,
                             },
                                 new CorporateInvestmentAccount
                             {
                                 AccountId = 662,
+                                OwnerId = 205,
                                 Balance = 14000,
                             },
                         },
@@ -74,16 +79,19 @@ namespace KarGlobal
                             new CheckingAccount
                             {
                                 AccountId = 885,
+                                OwnerId = 101,
                                 Balance = 1000,
                             },
                                 new CorporateInvestmentAccount
                             {
                                 AccountId = 106,
+                                OwnerId = 101,
                                 Balance = 10000,
                             },
                                 new IndividualInvestmentAccount
                             {
                                 AccountId = 704,
+                                OwnerId = 101,
                                 Balance = 600,
                             },
                         },
@@ -97,11 +105,13 @@ namespace KarGlobal
                             new CheckingAccount
                             {
                                 AccountId = 845,
+                                OwnerId = 102,
                                 Balance = 3000,
                             },
                                 new IndividualInvestmentAccount
                             {
                                 AccountId = 662,
+                                OwnerId = 102,
                                 Balance = 14000,
                             },
                         },

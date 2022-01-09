@@ -4,7 +4,7 @@ using System.Text;
 
 namespace KarGlobal
 {
-    public class BankAccountTransaction
+    public class BankAccountTransactionRequest
     {
         public Bank Bank { get; set; }
 
@@ -17,6 +17,11 @@ namespace KarGlobal
         public TransactionTypeEnum TransactionType { get; set; }
 
         public int? SourceAccountId { get; set; }
+    }
+
+    public interface ITransactionLimitAccount
+    {
+        public int TransactionLimit { get; set; }
     }
 
     public class Bank
@@ -48,17 +53,20 @@ namespace KarGlobal
 
     public class CheckingAccount : Account
     {
-
     }
 
     public class InvestmentAccount : Account
     {
-
     }
 
-    public class IndividualInvestmentAccount : InvestmentAccount
+    public class IndividualInvestmentAccount : InvestmentAccount, ITransactionLimitAccount
     {
-        public int WithdrawalLimit = 500;
+        private int _transactionLimit = 500;
+        public int TransactionLimit 
+        {
+            get { return _transactionLimit; }
+            set { }
+        }
     }
 
     public class CorporateInvestmentAccount : InvestmentAccount

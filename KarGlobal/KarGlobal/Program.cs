@@ -4,37 +4,29 @@ using System.Linq;
 
 namespace KarGlobal
 {
-    class Program
+    public class Program
     {
-        static void Main(BankAccountTransaction bankAccountTransaction, int? sourceAccountId)
+        public static Account Main(BankAccountTransactionRequest bankAccountTransactionRequest, int? sourceAccountId)
         {
-            switch (bankAccountTransaction.TransactionType)
+            var ownerAccountList = GetOwnerAccounts(bankAccountTransactionRequest);
+            var targetAccount = ownerAccountList.Where(n => n.AccountId == bankAccountTransactionRequest.TargetAccount.AccountId).SingleOrDefault();
+
+            switch (bankAccountTransactionRequest.TransactionType)
             {
                 case TransactionTypeEnum.Transfer:
-                    ProcessTransfer(bankAccountTransaction, sourceAccountId);
-                    break;
+                    return ProcessTransfer(bankAccountTransactionRequest, ownerAccountList, targetAccount, sourceAccountId);
 
                 case TransactionTypeEnum.Deposit:
-                    ProcessDeposit(bankAccountTransaction);
-                    break;
+                    return ProcessDeposit(bankAccountTransactionRequest, ownerAccountList, targetAccount);
 
                 case TransactionTypeEnum.Withdrawal:
-                    ProcessWithdrawal(bankAccountTransaction);
-                    break;
+                    return ProcessWithdrawal(bankAccountTransactionRequest, ownerAccountList, targetAccount);
+                default:
+                    return null;
             }
         }
 
-        public static void ProcessTransfer(BankAccountTransaction bankAccountTransaction, int? souceAccountId)
-        {
-            List<Account> ownerAccountList = GetOwnerAccounts(bankAccountTransaction);
-
-            var sourceAccount = ownerAccountList.Select(n => n.AccountId == souceAccountId);
-            var targetAccount = ownerAccountList.Select(n => n.AccountId == bankAccountTransaction.TargetAccount.AccountId);
-
-
-        }
-
-        private static List<Account> GetOwnerAccounts(BankAccountTransaction bankAccountTransaction)
+        public static List<Account> GetOwnerAccounts(BankAccountTransactionRequest bankAccountTransaction)
         {
             return Accounts.GetAccounts()
                             .Where(n => n.BankId == bankAccountTransaction.Bank.BankId)
@@ -43,14 +35,73 @@ namespace KarGlobal
                             .Where(l => l.OwnerId == bankAccountTransaction.OwnerId))).ToList();
         }
 
-        public static void ProcessDeposit(BankAccountTransaction bankAccountTransaction)
+        public static Account ProcessTransfer(BankAccountTransactionRequest bankAccountTransaction, List<Account> ownerAccounts, Account targetAccount, int? souceAccountId)
         {
+            var sourceAccount = ownerAccounts.Where(n => n.AccountId == souceAccountId).SingleOrDefault();
 
+            var withdrawal = ProcessWithdrawal(
+                new BankAccountTransactionRequest
+                {
+                    Bank = bankAccountTransaction.Bank,
+                    TargetAccount = sourceAccount,
+                    TransactionAmount = bankAccountTransaction.TransactionAmount
+                }, ownerAccounts, sourceAccount);
+
+            var deposit = ProcessDeposit(bankAccountTransaction, ownerAccounts, targetAccount);
+
+            if (withdrawal != null && deposit != null)
+            {
+                return targetAccount;
+            }
+
+            return null;
         }
 
-        public static void ProcessWithdrawal(BankAccountTransaction bankAccountTransaction)
+        public static Account ProcessDeposit(BankAccountTransactionRequest bankAccountTransaction, List<Account> ownerAccounts, Account targetAccount)
         {
+            var isValidTransaction = ValidateTransaction(targetAccount, bankAccountTransaction);
 
+            if (isValidTransaction)
+            {
+                targetAccount.Balance += bankAccountTransaction.TransactionAmount;
+                return targetAccount;
+            }
+
+            return null;
+        }
+
+        public static Account ProcessWithdrawal(BankAccountTransactionRequest bankAccountTransaction, List<Account> ownerAccounts, Account targetAccount)
+        {
+            var isValidTransaction = ValidateTransaction(targetAccount, bankAccountTransaction);
+
+            if (isValidTransaction)
+            {
+                targetAccount.Balance -= bankAccountTransaction.TransactionAmount;
+                return targetAccount;
+            }
+
+            return null;
+        }
+
+        private static bool ValidateTransaction(Account targetAccount, BankAccountTransactionRequest bankAccountTransaction)
+        {
+            if (targetAccount is ITransactionLimitAccount)
+            {
+                if (bankAccountTransaction.TransactionAmount > 500)
+                {
+                    return false;
+                };
+            }
+
+            if (bankAccountTransaction.TransactionType == TransactionTypeEnum.Withdrawal)
+            {
+                if (targetAccount.Balance < bankAccountTransaction.TransactionAmount)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
