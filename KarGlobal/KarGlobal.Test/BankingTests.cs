@@ -79,14 +79,13 @@ namespace KarGlobal.Test
                 {
                     AccountId = 501
                 },
-                TransactionAmount = 400,
+                TransactionAmount = 600,
                 SourceAccountId = 605
             };
 
             var ownerAccounts = Program.GetOwnerAccounts(data);
             var startingTargetBalance = ownerAccounts.Where(n => n.AccountId == data.TargetAccount.AccountId).SingleOrDefault().Balance;
             var startingSourceBalance = ownerAccounts.Where(n => n.AccountId == data.SourceAccountId).SingleOrDefault().Balance;
-
 
             // act
             var result = Program.Main(data);
