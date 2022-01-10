@@ -29,10 +29,10 @@ namespace KarGlobal.Test
             var startingBalance = ownerAccounts.Where(n => n.AccountId == data.TargetAccount.AccountId).SingleOrDefault().Balance;
 
             // act
-            var result = Program.Main(data, null);
+            var result = Program.Main(data);
 
             // assert
-            Assert.True(result.Balance == startingBalance - data.TransactionAmount);
+            Assert.True(result.SingleOrDefault().Balance == startingBalance - data.TransactionAmount);
         }
 
         [Fact]
@@ -58,10 +58,10 @@ namespace KarGlobal.Test
             var startingBalance = ownerAccounts.Where(n => n.AccountId == data.TargetAccount.AccountId).SingleOrDefault().Balance;
 
             // act
-            var result = Program.Main(data, null);
+            var result = Program.Main(data);
 
             // assert
-            Assert.True(result.Balance == startingBalance + data.TransactionAmount);
+            Assert.True(result.SingleOrDefault().Balance == startingBalance + data.TransactionAmount);
         }
         [Fact]
         public void TransferTest()
@@ -79,17 +79,26 @@ namespace KarGlobal.Test
                 {
                     AccountId = 501
                 },
-                TransactionAmount = 400
+                TransactionAmount = 400,
+                SourceAccountId = 605
             };
 
             var ownerAccounts = Program.GetOwnerAccounts(data);
-            var startingBalance = ownerAccounts.Where(n => n.AccountId == data.TargetAccount.AccountId).SingleOrDefault().Balance;
+            var startingTargetBalance = ownerAccounts.Where(n => n.AccountId == data.TargetAccount.AccountId).SingleOrDefault().Balance;
+            var startingSourceBalance = ownerAccounts.Where(n => n.AccountId == data.SourceAccountId).SingleOrDefault().Balance;
+
 
             // act
-            var result = Program.Main(data, 703);
+            var result = Program.Main(data);
 
             // assert
-            Assert.True(result.Balance == startingBalance + data.TransactionAmount);
+            var endingTargetBalance = result.Where(n => n.AccountId == data.TargetAccount.AccountId).SingleOrDefault().Balance;
+            var endingSourceBalance = result.Where(n => n.AccountId == data.SourceAccountId).SingleOrDefault().Balance;
+
+            Assert.True(
+                (endingTargetBalance == startingTargetBalance + data.TransactionAmount) && 
+                (endingSourceBalance == startingSourceBalance - data.TransactionAmount)
+                );
         }
     }
 }

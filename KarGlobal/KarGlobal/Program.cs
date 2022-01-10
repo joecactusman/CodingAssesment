@@ -6,7 +6,7 @@ namespace KarGlobal
 {
     public class Program
     {
-        public static Account Main(BankAccountTransactionRequest bankAccountTransactionRequest, int? sourceAccountId)
+        public static List<Account> Main(BankAccountTransactionRequest bankAccountTransactionRequest)
         {
             var ownerAccountList = GetOwnerAccounts(bankAccountTransactionRequest);
             var targetAccount = ownerAccountList.Where(n => n.AccountId == bankAccountTransactionRequest.TargetAccount.AccountId).SingleOrDefault();
@@ -14,7 +14,7 @@ namespace KarGlobal
             switch (bankAccountTransactionRequest.TransactionType)
             {
                 case TransactionTypeEnum.Transfer:
-                    return ProcessTransfer(bankAccountTransactionRequest, ownerAccountList, targetAccount, sourceAccountId);
+                    return ProcessTransfer(bankAccountTransactionRequest, ownerAccountList, targetAccount);
 
                 case TransactionTypeEnum.Deposit:
                     return ProcessDeposit(bankAccountTransactionRequest, ownerAccountList, targetAccount);
@@ -35,9 +35,10 @@ namespace KarGlobal
                             .Where(l => l.OwnerId == bankAccountTransaction.OwnerId))).ToList();
         }
 
-        public static Account ProcessTransfer(BankAccountTransactionRequest bankAccountTransaction, List<Account> ownerAccounts, Account targetAccount, int? souceAccountId)
+        public static List<Account> ProcessTransfer(BankAccountTransactionRequest bankAccountTransaction, List<Account> ownerAccounts, Account targetAccount)
         {
-            var sourceAccount = ownerAccounts.Where(n => n.AccountId == souceAccountId).SingleOrDefault();
+            var sourceAccount = ownerAccounts.Where(n => n.AccountId == bankAccountTransaction.SourceAccountId).SingleOrDefault();
+            var accounts = new List<Account>();
 
             var withdrawal = ProcessWithdrawal(
                 new BankAccountTransactionRequest
@@ -49,35 +50,45 @@ namespace KarGlobal
 
             var deposit = ProcessDeposit(bankAccountTransaction, ownerAccounts, targetAccount);
 
+            accounts.Add(withdrawal.SingleOrDefault());
+            accounts.Add(deposit.SingleOrDefault());
+
+
             if (withdrawal != null && deposit != null)
             {
-                return targetAccount;
+                return accounts;
             }
 
             return null;
         }
 
-        public static Account ProcessDeposit(BankAccountTransactionRequest bankAccountTransaction, List<Account> ownerAccounts, Account targetAccount)
+        public static List<Account> ProcessDeposit(BankAccountTransactionRequest bankAccountTransaction, List<Account> ownerAccounts, Account targetAccount)
         {
+            var accounts = new List<Account>();
+
             var isValidTransaction = ValidateTransaction(targetAccount, bankAccountTransaction);
 
             if (isValidTransaction)
             {
                 targetAccount.Balance += bankAccountTransaction.TransactionAmount;
-                return targetAccount;
+                accounts.Add(targetAccount);
+                return accounts;
             }
 
             return null;
         }
 
-        public static Account ProcessWithdrawal(BankAccountTransactionRequest bankAccountTransaction, List<Account> ownerAccounts, Account targetAccount)
+        public static List<Account> ProcessWithdrawal(BankAccountTransactionRequest bankAccountTransaction, List<Account> ownerAccounts, Account targetAccount)
         {
+            var accounts = new List<Account>();
+
             var isValidTransaction = ValidateTransaction(targetAccount, bankAccountTransaction);
 
             if (isValidTransaction)
             {
                 targetAccount.Balance -= bankAccountTransaction.TransactionAmount;
-                return targetAccount;
+                accounts.Add(targetAccount);
+                return accounts;
             }
 
             return null;
